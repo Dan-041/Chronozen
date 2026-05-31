@@ -3,12 +3,12 @@
     <OutputType>WinExe</OutputType>
     <TargetFramework>net8.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>
+    <UseWindowsForms>true</UseWindowsForms>
     <AssemblyName>ChronoZen</AssemblyName>
     <RootNamespace>ChronoZen</RootNamespace>
     <Nullable>enable</Nullable>
     <PublishSingleFile>true</PublishSingleFile>
     <SelfContained>true</SelfContained>
     <RuntimeIdentifier>win-x64</RuntimeIdentifier>
-    <ApplicationIcon>icon.ico</ApplicationIcon>
   </PropertyGroup>
 </Project>
