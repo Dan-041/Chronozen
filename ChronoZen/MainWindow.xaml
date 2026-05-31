@@ -1,0 +1,192 @@
+<Window x:Class="ChronoZen.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="ChronoZen" Height="780" Width="540"
+        ResizeMode="NoResize"
+        WindowStartupLocation="CenterScreen"
+        Background="#0e0e12"
+        FontFamily="Segoe UI">
+
+  <Window.Resources>
+    <!-- Style Spinbox-like (RepeatButton + TextBox) -->
+    <Style x:Key="FlatButton" TargetType="Button">
+      <Setter Property="Background" Value="#c8a96e"/>
+      <Setter Property="Foreground" Value="#0e0e12"/>
+      <Setter Property="BorderThickness" Value="0"/>
+      <Setter Property="Padding" Value="20,8"/>
+      <Setter Property="FontFamily" Value="Segoe UI Semibold"/>
+      <Setter Property="FontSize" Value="11"/>
+      <Setter Property="Cursor" Value="Hand"/>
+      <Setter Property="Template">
+        <Setter.Value>
+          <ControlTemplate TargetType="Button">
+            <Border Background="{TemplateBinding Background}"
+                    CornerRadius="4"
+                    Padding="{TemplateBinding Padding}">
+              <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            </Border>
+            <ControlTemplate.Triggers>
+              <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="#6ec8b4"/>
+              </Trigger>
+              <Trigger Property="IsPressed" Value="True">
+                <Setter Property="Background" Value="#4aa890"/>
+              </Trigger>
+            </ControlTemplate.Triggers>
+          </ControlTemplate>
+        </Setter.Value>
+      </Setter>
+    </Style>
+
+    <Style x:Key="StopButton" TargetType="Button" BasedOn="{StaticResource FlatButton}">
+      <Setter Property="Background" Value="#2a2a36"/>
+      <Setter Property="Foreground" Value="#5a5a72"/>
+      <Style.Triggers>
+        <Trigger Property="IsMouseOver" Value="True">
+          <Setter Property="Background" Value="#e06c75"/>
+          <Setter Property="Foreground" Value="#0e0e12"/>
+        </Trigger>
+      </Style.Triggers>
+    </Style>
+
+    <Style x:Key="PauseButton" TargetType="Button" BasedOn="{StaticResource FlatButton}">
+      <Setter Property="Background" Value="#6ec8b4"/>
+      <Setter Property="Foreground" Value="#0e0e12"/>
+      <Style.Triggers>
+        <Trigger Property="IsMouseOver" Value="True">
+          <Setter Property="Background" Value="#c8a96e"/>
+        </Trigger>
+      </Style.Triggers>
+    </Style>
+
+    <Style x:Key="TimeInput" TargetType="TextBox">
+      <Setter Property="Background" Value="#16161e"/>
+      <Setter Property="Foreground" Value="#e8e4da"/>
+      <Setter Property="BorderBrush" Value="#5a5a72"/>
+      <Setter Property="BorderThickness" Value="1"/>
+      <Setter Property="FontFamily" Value="Segoe UI Light"/>
+      <Setter Property="FontSize" Value="30"/>
+      <Setter Property="TextAlignment" Value="Center"/>
+      <Setter Property="Width" Value="70"/>
+      <Setter Property="Height" Value="50"/>
+      <Setter Property="VerticalContentAlignment" Value="Center"/>
+      <Setter Property="CaretBrush" Value="#c8a96e"/>
+      <Style.Triggers>
+        <Trigger Property="IsFocused" Value="True">
+          <Setter Property="BorderBrush" Value="#c8a96e"/>
+        </Trigger>
+      </Style.Triggers>
+    </Style>
+
+    <Style x:Key="PauseTimeInput" TargetType="TextBox" BasedOn="{StaticResource TimeInput}">
+      <Setter Property="Background" Value="#0e0e12"/>
+      <Style.Triggers>
+        <Trigger Property="IsFocused" Value="True">
+          <Setter Property="BorderBrush" Value="#6ec8b4"/>
+        </Trigger>
+      </Style.Triggers>
+    </Style>
+  </Window.Resources>
+
+  <Grid Margin="0">
+    <StackPanel HorizontalAlignment="Center">
+
+      <!-- Titre -->
+      <TextBlock Text="C H R O N O Z E N"
+                 Foreground="#c8a96e"
+                 FontFamily="Segoe UI Light"
+                 FontSize="15"
+                 TextAlignment="Center"
+                 Margin="0,20,0,8"/>
+
+      <!-- Horloge Canvas -->
+      <Canvas x:Name="ClockCanvas" Width="360" Height="360"
+              HorizontalAlignment="Center" Margin="0,0,0,10"/>
+
+      <!-- ── Timer principal ── -->
+      <Border Background="#1c1c26" CornerRadius="6"
+              Margin="28,0,28,0" Padding="20,14">
+        <StackPanel>
+          <TextBlock Text="TIMER PRINCIPAL" Foreground="#5a5a72"
+                     FontSize="9" Margin="0,0,0,10"/>
+          <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+            <StackPanel>
+              <TextBox x:Name="TxtMainMin" Text="05"
+                       Style="{StaticResource TimeInput}"
+                       PreviewTextInput="NumOnly"
+                       GotFocus="SelectAll"
+                       TextChanged="TimeInputChanged"/>
+              <TextBlock Text="min" Foreground="#5a5a72" FontSize="8"
+                         TextAlignment="Center" Margin="0,2,0,0"/>
+            </StackPanel>
+            <TextBlock Text=":" Foreground="#c8a96e" FontSize="30"
+                       VerticalAlignment="Center" Margin="8,0,8,8"
+                       FontFamily="Segoe UI Light"/>
+            <StackPanel>
+              <TextBox x:Name="TxtMainSec" Text="00"
+                       Style="{StaticResource TimeInput}"
+                       PreviewTextInput="NumOnly"
+                       GotFocus="SelectAll"
+                       TextChanged="TimeInputChanged"/>
+              <TextBlock Text="sec" Foreground="#5a5a72" FontSize="8"
+                         TextAlignment="Center" Margin="0,2,0,0"/>
+            </StackPanel>
+            <Button x:Name="BtnStart" Content="DÉBUT"
+                    Style="{StaticResource FlatButton}"
+                    Margin="16,0,0,0" VerticalAlignment="Top" Height="50"
+                    Click="BtnStart_Click"/>
+            <Button x:Name="BtnStop" Content="STOP"
+                    Style="{StaticResource StopButton}"
+                    Margin="6,0,0,0" VerticalAlignment="Top" Height="50"
+                    Click="BtnStop_Click"/>
+          </StackPanel>
+          <!-- Barre de progression -->
+          <Border Background="#16161e" Height="4" CornerRadius="2" Margin="0,12,0,0">
+            <Border x:Name="ProgressBar" Background="#c8a96e"
+                    Height="4" CornerRadius="2"
+                    HorizontalAlignment="Left" Width="0"/>
+          </Border>
+        </StackPanel>
+      </Border>
+
+      <!-- ── Timer pause ── -->
+      <Border Background="#16161e" CornerRadius="6"
+              Margin="28,10,28,0" Padding="20,14">
+        <StackPanel>
+          <TextBlock Text="PAUSE" Foreground="#6ec8b4"
+                     FontSize="9" Margin="0,0,0,10"/>
+          <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+            <StackPanel>
+              <TextBox x:Name="TxtPauseMin" Text="05"
+                       Style="{StaticResource PauseTimeInput}"
+                       PreviewTextInput="NumOnly"
+                       GotFocus="SelectAll"/>
+              <TextBlock Text="min" Foreground="#5a5a72" FontSize="8"
+                         TextAlignment="Center" Margin="0,2,0,0"/>
+            </StackPanel>
+            <TextBlock Text=":" Foreground="#6ec8b4" FontSize="30"
+                       VerticalAlignment="Center" Margin="8,0,8,8"
+                       FontFamily="Segoe UI Light"/>
+            <StackPanel>
+              <TextBox x:Name="TxtPauseSec" Text="00"
+                       Style="{StaticResource PauseTimeInput}"
+                       PreviewTextInput="NumOnly"
+                       GotFocus="SelectAll"/>
+              <TextBlock Text="sec" Foreground="#5a5a72" FontSize="8"
+                         TextAlignment="Center" Margin="0,2,0,0"/>
+            </StackPanel>
+          </StackPanel>
+        </StackPanel>
+      </Border>
+
+      <!-- Statut + compteur -->
+      <TextBlock x:Name="LblStatus" Text=""
+                 Foreground="#c8a96e" FontSize="11"
+                 TextAlignment="Center" Margin="0,10,0,0"/>
+      <TextBlock x:Name="LblCount" Text=""
+                 Foreground="#5a5a72" FontSize="9"
+                 TextAlignment="Center" Margin="0,4,0,14"/>
+
+    </StackPanel>
+  </Grid>
+</Window>
